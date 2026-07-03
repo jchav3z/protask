@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProTask | Gestión de Proyectos Académicos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=admin-panel-20260703" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">P</div>
+          <div>
+            <strong>ProTask</strong>
+            <span>Micro tareas académicas</span>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="Navegación principal">
+          <button class="nav-item active auth-nav" data-screen="login" type="button">Acceso</button>
+          <button class="nav-item locked" data-screen="dashboard" type="button">Dashboard</button>
+          <button class="nav-item locked" data-screen="project" type="button">Proyecto</button>
+          <button class="nav-item locked" data-screen="history" type="button">Historial</button>
+          <button class="nav-item locked" data-screen="profile" type="button">Perfil</button>
+          <button class="nav-item locked admin-only hidden" data-screen="admin" type="button">Admin</button>
+        </nav>
+
+        <div class="sidebar-panel progress-panel">
+          <span class="panel-label">Resumen semanal</span>
+          <strong id="sidebar-week-summary">0/10 micro tareas</strong>
+          <div class="sidebar-progress-line" aria-hidden="true">
+            <span id="sidebar-week-progress"></span>
+          </div>
+          <p id="sidebar-project-summary">Sin proyectos activos por ahora.</p>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="eyebrow-context">Plataforma SaaS de productividad</p>
+            <h1 id="screen-title">Inicio de sesión / Registro</h1>
+          </div>
+          <div class="topbar-actions">
+            <div class="status-pill"><span></span><strong id="session-label">Sin sesión</strong></div>
+            <button class="secondary-action compact hidden" id="btn-logout" type="button">Cerrar sesión</button>
+          </div>
+        </header>
+
+        <section class="screen active" id="login" aria-labelledby="screen-title">
+          <div class="auth-layout">
+            <div class="auth-copy">
+              <header class="login-brand">
+                <div class="brand-mark">P</div>
+                <span>ProTask</span>
+              </header>
+              <div class="login-hero-content">
+                <p class="eyebrow">Menos procrastinación, más avance</p>
+                <h2>Convierte tus pendientes académicos en avances concretos.</h2>
+                <p>
+                  Organiza proyectos, trabaja en bloques de 15 a 25 minutos y revisa tu progreso semanal desde un tablero claro,
+                  privado y pensado para estudiantes.
+                </p>
+                <div class="login-visual" aria-hidden="true">
+                  <article class="floating-task card-one">
+                    <span>Proyecto activo</span>
+                    <strong>Ensayo de Historia</strong>
+                    <div class="progress-line"><i style="width: 68%"></i></div>
+                  </article>
+                  <article class="floating-task card-two">
+                    <span>Temporizador</span>
+                    <strong>25:00</strong>
+                    <small>Redactar introducción</small>
+                  </article>
+                  <article class="floating-task card-three">
+                    <span>Racha</span>
+                    <strong>7 días</strong>
+                    <small>Micro tareas completadas</small>
+                  </article>
+                </div>
+                <div class="metric-row">
+                  <div><strong>25 min</strong><span>máximo por micro tarea</span></div>
+                  <div><strong>3 clics</strong><span>para registrar una tarea</span></div>
+                </div>
+              </div>
+            </div>
+
+            <form class="auth-card" id="auth-form">
+              <div class="auth-heading">
+                <span class="auth-kicker">Cuenta ProTask</span>
+                <h2>Accede a tu tablero</h2>
+                <p>Inicia sesión con tu cuenta o registra un nuevo acceso a la plataforma.</p>
+              </div>
+              <div class="tabs" role="tablist" aria-label="Tipo de acceso">
+                <button class="tab active" id="tab-login" type="button">Ingresar</button>
+                <button class="tab" id="tab-register" type="button">Registrarse</button>
+              </div>
+              <div class="form-grid register-only hidden">
+                <label>
+                  Nombre
+                  <input type="text" id="auth-name" autocomplete="given-name" />
+                </label>
+                <label>
+                  Apellido
+                  <input type="text" id="auth-last-name" autocomplete="family-name" />
+                </label>
+              </div>
+              <label>
+                Correo electrónico
+                <input type="email" id="auth-email" autocomplete="email" />
+              </label>
+              <label>
+                Contraseña
+                <input type="password" id="auth-password" autocomplete="off" />
+              </label>
+              <button class="link-action" id="btn-forgot-password" type="button">¿Olvidaste tu contraseña?</button>
+              <label class="check-row register-only hidden">
+                <input type="checkbox" id="accept-terms" />
+                Acepto términos de uso y política de privacidad.
+              </label>
+              <button class="primary-action" id="btn-auth" type="submit">Entrar al tablero</button>
+              <p class="form-note" id="auth-note">Autenticación conectada a Supabase.</p>
+            </form>
+
+            <form class="auth-card hidden" id="recovery-form">
+              <div class="auth-heading">
+                <span class="auth-kicker">Recuperación</span>
+                <h2>Restablece tu contraseña</h2>
+                <p>Ingresa tu correo y recibirás un enlace seguro para crear una nueva contraseña.</p>
+              </div>
+              <label>
+                Correo electrónico
+                <input type="email" id="recovery-email" placeholder="ejemplo@inacapmail.cl" autocomplete="email" />
+              </label>
+              <button class="primary-action" type="submit">Enviar enlace de recuperación</button>
+              <button class="link-action centered" id="btn-back-login" type="button">Volver al inicio de sesión</button>
+              <p class="form-note">El enlace será gestionado por Supabase Auth.</p>
+            </form>
+
+            <form class="auth-card hidden" id="new-password-form">
+              <div class="auth-heading">
+                <span class="auth-kicker">Nueva contraseña</span>
+                <h2>Crea una contraseña segura</h2>
+                <p>Escribe una nueva contraseña para recuperar el acceso a tu cuenta.</p>
+              </div>
+              <label>
+                Nueva contraseña
+                <input type="password" id="new-password" autocomplete="new-password" />
+              </label>
+              <label>
+                Confirmar contraseña
+                <input type="password" id="confirm-password" autocomplete="new-password" />
+              </label>
+              <button class="primary-action" type="submit">Guardar nueva contraseña</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="screen" id="dashboard" aria-labelledby="screen-title">
+          <div class="dashboard-grid">
+            <div class="summary-card main-summary dashboard-spotlight" id="main-project-card">
+              <div class="dashboard-card-head">
+                <p class="eyebrow">Proyecto activo</p>
+                <span class="dashboard-chip" id="main-project-tag">Sin proyecto</span>
+              </div>
+              <h2 id="main-project-title">No hay proyectos activos</h2>
+              <p class="muted-text" id="main-project-desc">Crea un proyecto para comenzar a organizar tus pendientes.</p>
+              <div class="progress-line"><span id="main-project-progress-bar" style="width: 0%"></span></div>
+              <div class="summary-stats">
+                <div><strong id="main-project-percent">0%</strong><span>avance</span></div>
+                <div><strong id="main-project-tasks-count">0</strong><span>micro tareas</span></div>
+                <div><strong id="main-project-days">-</strong><span>días restantes</span></div>
+              </div>
+              <button class="primary-action compact" id="btn-go-to-project" type="button">Ver desglose</button>
+            </div>
+
+            <div class="summary-card productivity-card">
+              <div class="dashboard-card-head">
+                <p class="eyebrow">Productividad</p>
+                <span class="dashboard-chip soft">Semana</span>
+              </div>
+              <h3>Sesiones completadas</h3>
+              <div class="mini-chart" aria-hidden="true" id="dashboard-mini-chart">
+                <span title="Lunes"></span>
+                <span title="Martes"></span>
+                <span title="Miércoles"></span>
+                <span title="Jueves"></span>
+                <span title="Viernes"></span>
+                <span title="Sábado"></span>
+                <span title="Domingo"></span>
+              </div>
+              <div class="chart-labels" aria-hidden="true">
+                <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+              </div>
+              <p class="muted-text" id="week-summary">Sin sesiones registradas esta semana.</p>
+            </div>
+
+            <form class="summary-card task-entry project-creator-card" id="project-form">
+              <div class="dashboard-card-head">
+                <p class="eyebrow">Nuevo proyecto</p>
+                <span class="dashboard-chip soft">Planificación</span>
+              </div>
+              <label>Objetivo principal
+                <input id="new-project-title" placeholder="Ej: Ensayo de Historia" />
+              </label>
+              <label>Descripción breve
+                <input id="new-project-desc" placeholder="Ej: Investigar, redactar y revisar el ensayo final" />
+              </label>
+              <div class="form-grid">
+                <label>Fecha límite
+                  <input id="new-project-deadline" type="date" />
+                </label>
+                <label>Etiqueta
+                  <select id="new-project-tag">
+                    <option>Académico</option>
+                    <option>Personal</option>
+                    <option>Laboral</option>
+                    <option>Investigación</option>
+                  </select>
+                </label>
+              </div>
+              <button class="secondary-action" id="btn-add-project" type="submit">Crear proyecto</button>
+            </form>
+          </div>
+
+          <div class="dashboard-projects-bar">
+            <div>
+              <p class="eyebrow">Proyectos</p>
+              <h2>Panel de avance</h2>
+            </div>
+            <span class="project-count-pill" id="project-count-label">0 proyectos</span>
+          </div>
+
+          <div class="toolbar dashboard-toolbar">
+            <label>
+              Buscar proyecto
+              <input id="project-search" placeholder="Buscar por nombre o descripción" />
+            </label>
+            <label>
+              Etiqueta
+              <select id="project-filter">
+                <option value="all">Todas</option>
+                <option>Académico</option>
+                <option>Personal</option>
+                <option>Laboral</option>
+                <option>Investigación</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="project-list" id="projects-container"></div>
+        </section>
+
+        <section class="screen" id="project" aria-labelledby="screen-title">
+          <div class="project-header">
+            <div>
+              <p class="eyebrow" id="project-view-eyebrow">Vista de proyecto</p>
+              <h2 id="project-view-title">Crea un proyecto en el Dashboard</h2>
+              <p id="project-view-desc">Desglose de objetivos y planificación estructurada.</p>
+            </div>
+            <div class="button-row">
+              <button class="secondary-action compact" onclick="showScreen('dashboard')" type="button">Volver</button>
+              <button class="primary-action compact focus-short" id="btn-start-next" type="button">Foco</button>
+            </div>
+          </div>
+
+          <form class="summary-card task-entry-horizontal" id="task-form">
+            <div class="task-entry-head">
+              <div>
+                <p class="eyebrow">Agregar micro tarea</p>
+                <h3>Divide el proyecto en avances pequeños</h3>
+                <p class="task-entry-hint">La división automática es solo una sugerencia; puedes ajustar, completar o borrar las tareas que cree.</p>
+              </div>
+              <button class="secondary-action compact" id="btn-suggest-tasks" type="button">Dividir automáticamente</button>
+            </div>
+            <div class="horizontal-inputs">
+              <input id="new-task-name" placeholder="Ej: Redactar introducción" />
+              <input id="new-task-time" placeholder="15 a 25 min" type="number" min="15" max="25" value="25" />
+              <button class="primary-action compact" id="btn-add-task" type="submit">Agregar tarea</button>
+            </div>
+          </form>
+
+          <div class="task-board" id="tasks-container"></div>
+        </section>
+
+        <section class="screen zen-screen" id="timer" aria-labelledby="screen-title">
+          <div class="timer-layout">
+            <div class="timer-card">
+              <p class="eyebrow">Sesión activa - Temporizador</p>
+              <h2 id="timer-current-task-title">No hay una tarea activa en ejecución</h2>
+              <p class="muted-text" id="timer-current-project">Selecciona una micro tarea desde la vista de proyecto.</p>
+              <div class="timer-ring" id="timer-ring">
+                <span id="timer-display">25:00</span>
+              </div>
+              <div class="timer-actions">
+                <button class="primary-action compact" id="timer-toggle" type="button">Iniciar</button>
+                <button class="secondary-action compact" id="timer-reset" type="button">Reiniciar</button>
+                <button class="secondary-action compact" id="timer-complete" type="button">Completar</button>
+                <button class="secondary-action compact" id="timer-back-project" type="button">Volver al proyecto</button>
+              </div>
+            </div>
+
+            <div class="focus-panel">
+              <h3>Checklist de enfoque</h3>
+              <div id="timer-checklist-container"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="history" aria-labelledby="screen-title">
+          <div class="history-layout">
+            <div class="summary-card">
+              <p class="eyebrow">Logros y métricas</p>
+              <h2><span id="history-count">0</span> micro tareas completadas</h2>
+              <div class="summary-stats stacked">
+                <div><strong id="history-streak">0</strong><span>racha de días</span></div>
+                <div><strong id="history-average">0</strong><span>min promedio</span></div>
+                <div><strong id="history-total-time">0</strong><span>min enfocados</span></div>
+              </div>
+              <div class="progress-line"><span id="history-global-progress" style="width: 0%"></span></div>
+              <button class="secondary-action" id="btn-weekly-report" type="button">Generar reporte semanal</button>
+            </div>
+
+            <div class="timeline" id="history-timeline-container"></div>
+          </div>
+        </section>
+
+        <section class="screen" id="profile" aria-labelledby="screen-title">
+          <div class="profile-layout">
+            <div class="summary-card profile-card-view" id="profile-view-card">
+              <div class="profile-hero">
+                <div class="profile-photo" id="profile-view-photo">
+                  <img class="hidden" id="profile-view-avatar" alt="Foto de perfil" />
+                  <span id="profile-view-initials">P</span>
+                </div>
+                <div>
+                  <p class="eyebrow">Perfil personal</p>
+                  <h2 id="profile-view-fullname">Usuario ProTask</h2>
+                  <p id="profile-view-email" class="muted-text">correo@ejemplo.cl</p>
+                </div>
+              </div>
+
+              <div class="profile-detail-grid">
+                <article>
+                  <span>Carrera o área</span>
+                  <strong id="profile-view-career">Sin información</strong>
+                </article>
+                <article>
+                  <span>Institución</span>
+                  <strong id="profile-view-institution">Sin información</strong>
+                </article>
+                <article class="wide">
+                  <span>Objetivo personal</span>
+                  <strong id="profile-view-goal">Sin información</strong>
+                </article>
+                <article>
+                  <span>Meta semanal</span>
+                  <strong id="profile-view-weekly-goal">10 micro tareas</strong>
+                </article>
+                <article>
+                  <span>Duración preferida</span>
+                  <strong id="profile-view-focus-time">25 minutos</strong>
+                </article>
+              </div>
+
+              <button class="primary-action" id="btn-edit-profile" type="button">Editar perfil</button>
+            </div>
+
+            <form class="summary-card hidden" id="profile-form">
+              <p class="eyebrow">Editar perfil</p>
+              <div class="profile-photo-editor">
+                <div class="profile-photo profile-photo-large">
+                  <img class="hidden" id="profile-edit-avatar" alt="Vista previa de foto de perfil" />
+                  <span id="profile-edit-initials">P</span>
+                </div>
+                <div>
+                  <strong>Foto de perfil</strong>
+                  <span>Agrega una imagen clara para personalizar tu cuenta.</span>
+                  <div class="profile-photo-actions">
+                    <label class="secondary-action compact photo-upload-action" for="profile-avatar-input">Cambiar foto</label>
+                    <input id="profile-avatar-input" type="file" accept="image/*" />
+                    <button class="secondary-action compact" id="btn-remove-avatar" type="button">Quitar foto</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-grid">
+                <label>Nombre
+                  <input id="profile-name" disabled readonly />
+                </label>
+                <label>Apellido
+                  <input id="profile-last-name" disabled readonly />
+                </label>
+              </div>
+              <label>Correo
+                <input id="profile-email" type="email" disabled readonly />
+              </label>
+              <div class="form-grid">
+                <label>Carrera o área
+                  <input id="profile-career" placeholder="Ej: Informática" />
+                </label>
+                <label>Institución
+                  <input id="profile-institution" placeholder="Ej: INACAP" />
+                </label>
+              </div>
+              <label>Objetivo personal
+                <input id="profile-goal" placeholder="Ej: Mantener avance diario en mis proyectos" />
+              </label>
+              <div class="form-grid">
+                <label>Meta semanal de micro tareas
+                  <input id="profile-weekly-goal" type="number" min="1" max="100" value="10" />
+                </label>
+                <label>Duración preferida
+                  <select id="profile-focus-time">
+                    <option value="15">15 minutos</option>
+                    <option value="20">20 minutos</option>
+                    <option value="25">25 minutos</option>
+                  </select>
+                </label>
+              </div>
+              <div class="profile-edit-actions">
+                <button class="secondary-action" id="btn-cancel-profile" type="button">Cancelar</button>
+                <button class="primary-action" id="btn-save-profile" type="submit" disabled>Guardar perfil</button>
+              </div>
+            </form>
+
+            <div class="summary-card security-card">
+              <div class="security-card-head">
+                <div class="security-icon">ID</div>
+                <div>
+                  <p class="eyebrow">Privacidad y seguridad</p>
+                  <h2>Datos privados por cuenta</h2>
+                  <p class="muted-text">
+                    El correo es el identificador de acceso y permanece bloqueado. Tus proyectos, tareas e historial
+                    se mantienen asociados exclusivamente a tu cuenta.
+                  </p>
+                </div>
+              </div>
+
+              <div class="profile-security-list">
+                <article>
+                  <span>Rol actual</span>
+                  <strong id="profile-role-label">Usuario</strong>
+                </article>
+                <article>
+                  <span>Cuenta creada</span>
+                  <strong id="profile-created-label">-</strong>
+                </article>
+                <article>
+                  <span>Proyectos propios</span>
+                  <strong id="profile-projects-label">0</strong>
+                </article>
+              </div>
+
+              <div class="account-danger-zone">
+                <div>
+                  <strong>Borrar cuenta</strong>
+                  <span>Elimina tu cuenta y los datos asociados de ProTask de forma permanente.</span>
+                </div>
+                <button class="warning-action" id="btn-delete-account" type="button">Borrar cuenta</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="admin" aria-labelledby="screen-title">
+          <div class="admin-layout">
+            <div class="summary-card">
+              <p class="eyebrow">Administración</p>
+              <h2>Panel general</h2>
+              <div class="summary-stats">
+                <div><strong id="admin-users-count">0</strong><span>usuarios</span></div>
+                <div><strong id="admin-projects-count">0</strong><span>proyectos</span></div>
+                <div><strong id="admin-tasks-count">0</strong><span>micro tareas</span></div>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <p class="eyebrow">Productividad global</p>
+              <h2><span id="admin-completed-count">0</span> tareas completadas</h2>
+              <p class="muted-text"><span id="admin-minutes-count">0</span> minutos enfocados registrados por la plataforma.</p>
+            </div>
+
+            <div class="summary-card admin-refresh-card">
+              <p class="eyebrow">Sincronización</p>
+              <h2>Datos del panel</h2>
+              <p class="muted-text">Recarga usuarios, proyectos y reportes guardados en la plataforma.</p>
+              <button class="secondary-action" id="btn-refresh-admin" type="button">Actualizar datos</button>
+            </div>
+          </div>
+
+          <div class="admin-grid">
+            <section class="summary-card">
+              <p class="eyebrow">Usuarios</p>
+              <div class="admin-list" id="admin-users-list"></div>
+            </section>
+
+            <section class="summary-card">
+              <p class="eyebrow">Proyectos</p>
+              <div class="admin-list" id="admin-projects-list"></div>
+            </section>
+
+            <section class="summary-card">
+              <p class="eyebrow">Reportes semanales</p>
+              <div class="admin-list" id="admin-reports-list"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <button class="chat-toggle" id="chat-toggle" type="button" aria-label="Abrir ayuda">?</button>
+    <aside class="chatbot hidden" id="chatbot" aria-live="polite">
+      <header>
+        <div>
+          <strong>Ayuda ProTask</strong>
+          <span>Preguntas frecuentes</span>
+        </div>
+        <button id="chat-close" type="button" aria-label="Cerrar ayuda">×</button>
+      </header>
+      <div class="chat-messages" id="chat-messages">
+        <p class="bot-msg">Hola. Puedo ayudarte con proyectos, micro tareas, temporizador, reportes y privacidad.</p>
+        <div class="chat-suggestions" aria-label="Sugerencias de preguntas">
+          <button type="button" data-question="¿Cómo creo un proyecto?">Crear proyecto</button>
+          <button type="button" data-question="¿Cuánto puede durar una micro tarea?">Micro tareas</button>
+          <button type="button" data-question="¿Cómo funciona el temporizador?">Temporizador</button>
+          <button type="button" data-question="¿Cómo genero el reporte semanal?">Reporte semanal</button>
+          <button type="button" data-question="¿Quién puede ver mis datos?">Privacidad</button>
+        </div>
+      </div>
+      <form class="chat-form" id="chat-form">
+        <input id="chat-input" placeholder="Escribe tu duda" />
+        <button type="submit">Enviar</button>
+      </form>
+    </aside>
+
+    <div class="toast hidden" id="toast"></div>
+    <div class="modal-backdrop hidden" id="delete-account-modal" role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
+      <div class="confirm-modal">
+        <p class="eyebrow">Confirmación requerida</p>
+        <h2 id="delete-account-title">Borrar cuenta</h2>
+        <p>
+          Esta acción eliminará tu cuenta y la información guardada en ProTask. Para continuar, confirma ambos puntos.
+        </p>
+        <label class="confirm-check">
+          <input id="delete-check-data" type="checkbox" />
+          Entiendo que se eliminarán mis proyectos, tareas, historial y reportes.
+        </label>
+        <label class="confirm-check">
+          <input id="delete-check-final" type="checkbox" />
+          Confirmo que quiero borrar mi cuenta de forma permanente.
+        </label>
+        <div class="modal-actions">
+          <button class="secondary-action" id="btn-cancel-delete-account" type="button">Cancelar</button>
+          <button class="warning-action" id="btn-confirm-delete-account" type="button" disabled>Borrar definitivamente</button>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
